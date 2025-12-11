@@ -1,19 +1,27 @@
 class Solution {
 public:
     vector<int> singleNumber(vector<int>& nums) {
-        int n = nums.size();
-        unordered_map<int,int> mp;
-        vector<int> result;
+        long long xor_a = 0;
 
-        for(auto &num : nums){
-            mp[num]++;
+        for(auto &num : nums){ //frist taking xor of all number
+            xor_a ^= num;
         }
 
-        for(auto &i : mp){
-            if(i.second == 1){
-                result.push_back(i.first);
+        long long mask = (xor_a) & (-xor_a); // to get the rightmost set bit
+        
+        // dividing into grps to get the single single numbers
+        int grpa =0; 
+        int grpb =0;
+
+
+        for(auto &i : nums){
+            if(i & mask){
+                grpa ^= i;
+            }
+            else{
+                grpb ^= i;
             }
         }
-        return result;
+        return {grpa,grpb};
     }
 };
