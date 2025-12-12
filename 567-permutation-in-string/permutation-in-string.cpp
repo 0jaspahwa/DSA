@@ -6,15 +6,27 @@ public:
 
         if(n > m) return false;
 
-        sort(s1.begin(),s1.end());
+        vector<int> s1f(26,0);
+        vector<int> s2f(26,0);
 
-        for(int i=0; i<= m-n; i++){
-            string substring = s2.substr(i,n);
-            sort(substring.begin(), substring.end());
+        for(char &ch : s1){
+            s1f[ch - 'a']++;
+        }
 
-            if(s1 == substring){
+        int i=0;
+        int j=0;
+        while(j<m){
+            s2f[s2[j] - 'a']++;
+
+            if(j-i+1 > n){
+                s2f[s2[i] - 'a']--;
+                i++;
+            }
+            if(s1f == s2f){
                 return true;
             }
+            j++;
+
         }
         return false;
     }
