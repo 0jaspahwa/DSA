@@ -1,33 +1,23 @@
 class Solution {
 public:
-    
     vector<vector<int>> result;
-    unordered_set<int> st;
 
-    void solve(vector<int>& temp, vector<int>& nums){
+    void solve(int idx, vector<int>& nums){
         int n = nums.size();
-        if(temp.size() == n){
-            result.push_back(temp);
+        if(idx == n){
+            result.push_back(nums);
             return;
         }
-        
-        for(int i=0; i<n; i++){
-            if(st.find(nums[i]) == st.end()){
-                temp.push_back(nums[i]);
-                st.insert(nums[i]);
 
-                solve(temp, nums);
-
-                temp.pop_back();
-                st.erase(nums[i]);
-            }
+        for(int i = idx; i<n; i++){ // if we start i from 0, we will get same results in recursion tree
+            swap(nums[i], nums[idx]); // do
+            solve(idx + 1, nums); // explore
+            swap(nums[i], nums[idx]); // undo
         }
     }
     vector<vector<int>> permute(vector<int>& nums) {
         int n = nums.size();
-        vector<int> temp;
-        solve(temp, nums);
-
+        solve(0,nums);
         return result;
     }
 };
