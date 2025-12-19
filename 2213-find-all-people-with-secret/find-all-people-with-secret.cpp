@@ -1,62 +1,43 @@
-class DSU {
-public:
-    vector<int> parent;
-    DSU(int n) {
-        parent.resize(n);
-        for (int i = 0; i < n; i++) parent[i] = i;
-    }
-    int find(int i) {
-        if (parent[i] == i) return i;
-        return parent[i] = find(parent[i]);
-    }
-    void unite(int i, int j) {
-        int root_i = find(i);
-        int root_j = find(j);
-        if (root_i != root_j) parent[root_i] = root_j;
-    }
-    void reset(int i) {
-        parent[i] = i;
-    }
-    bool isConnected(int i, int j) {
-        return find(i) == find(j);
-    }
-};
-
 class Solution {
 public:
+    typedef pair<int, int> P;
+
     vector<int> findAllPeople(int n, vector<vector<int>>& meetings, int firstPerson) {
-        sort(meetings.begin(), meetings.end(), [](const vector<int>& a, const vector<int>& b) {
-            return a[2] < b[2];
-        });
+        unordered_map<int, vector<pair<int, int>>> adj;
+        for (const auto& m : meetings) {
+            adj[m[0]].push_back({m[1], m[2]});
+            adj[m[1]].push_back({m[0], m[2]});
+        }
 
-        DSU dsu(n);
-        dsu.unite(0, firstPerson);
+        priority_queue<P, vector<P>, greater<P>> pq;
+        vector<int> secretTime(n, INT_MAX);
 
-        int i = 0;
-        int m = meetings.size();
-        while (i < m) {
-            int currentTime = meetings[i][2];
-            vector<int> pool;
-            
-            int start = i;
-            while (i < m && meetings[i][2] == currentTime) {
-                dsu.unite(meetings[i][0], meetings[i][1]);
-                pool.push_back(meetings[i][0]);
-                pool.push_back(meetings[i][1]);
-                i++;
-            }
+        secretTime[0] = 0;
+        secretTime[firstPerson] = 0;
+        pq.push({0, 0});
+        pq.push({0, firstPerson});
 
-            for (int person : pool) {
-                if (!dsu.isConnected(person, 0)) {
-                    dsu.reset(person);
+        while (!pq.empty()) {
+            auto [t, person] = pq.top();
+            pq.pop();
+
+            if (t > secretTime[person]) continue;
+
+            for (auto& nbr : adj[person]) {
+                int v = nbr.first;
+                int mt = nbr.second;
+
+                if (mt >= t && secretTime[v] > mt) {
+                    secretTime[v] = mt;
+                    pq.push({mt, v});
                 }
             }
         }
 
-        vector<int> ans;
-        for (int j = 0; j < n; j++) {
-            if (dsu.isConnected(j, 0)) ans.push_back(j);
+        vector<int> result;
+        for (int i = 0; i < n; i++) {
+            if (secretTime[i] != INT_MAX) result.push_back(i);
         }
-        return ans;
+        return result;
     }
 };
