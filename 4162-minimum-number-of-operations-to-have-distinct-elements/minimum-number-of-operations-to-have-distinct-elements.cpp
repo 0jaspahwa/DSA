@@ -1,13 +1,16 @@
 class Solution {
 public:
     int minOperations(vector<int>& nums) {
-        int n = nums.size(); 
-        unordered_set<int> s;
-        int i=0;
-        for(i=n-1; i>=0; i--){
-            if(s.count(nums[i])) break;
-            s.insert(nums[i]);
+        int n = nums.size();
+        unordered_set<int> mp;
+        int cnt=0;
+        for(int i= n-1; i>=0; i--){
+            if(mp.count(nums[i])){
+                break;
+            }
+            mp.insert(nums[i]);
+            cnt++;
         }
-        return (i+3)/3;
+        return ceil((double)(n-cnt)/3);
     }
 };
