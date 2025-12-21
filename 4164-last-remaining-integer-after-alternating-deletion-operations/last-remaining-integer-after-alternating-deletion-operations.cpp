@@ -1,21 +1,8 @@
 class Solution {
 public:
-    typedef long long ll;
-    long long lastInteger(long long n) {
-        ll a =1;
-        ll d =1;
-        ll length =n;
-        while(length>1){
-            if(length>1){
-                length =(length+1)/2;
-                d *= 2;
-            }
-            if(length%2 == 0){
-                a += d;
-            }
-            length = (length+1)/2;
-            d *= 2;    
-        }
-        return a;
-    }
+    long long lastInteger(long long n) {
+        long long mask = 0;
+        for(int i = 1; i < 63; i += 2) mask |= (1LL << i);//maksing the odd bits
+        return 1 + (mask & (n - 1)); 
+    }
 };
