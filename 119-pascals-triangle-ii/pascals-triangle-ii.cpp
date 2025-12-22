@@ -1,15 +1,17 @@
 class Solution {
 public:
     vector<int> getRow(int rowIndex) {
+        //optimized we are using just one before elements to count the result
         int n = rowIndex;
-        vector<vector<int>> result(n+1);
+        vector<int> prev;
             
             for(int i=0; i<n+1; i++){
-                result[i] = vector<int>(i+1,1);
+                vector<int> curr(i+1,1);
                 for(int j=1; j<i; j++){
-                    result[i][j] = result[i-1][j] + result[i-1][j-1];
+                    curr[j] = prev[j] + prev[j-1];
                 }
+                prev = curr;
             }
-        return result[n];    
+        return prev;    
     }
 };
