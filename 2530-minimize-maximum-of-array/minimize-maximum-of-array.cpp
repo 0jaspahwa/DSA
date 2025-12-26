@@ -1,16 +1,14 @@
 class Solution {
 public:
     bool isvalid(vector<int>& nums,int midmax,int n){
-        long long buffer =0;
-        vector<long long> arr(nums.begin(),nums.end());
-        for(int i=0; i<n-1; i++){
-            if(arr[i] > midmax){
+        long long currsum =0;
+        for(int i=0; i<n; i++){
+            currsum += nums[i];
+            if(currsum > (long long)midmax * (i+1)){
                 return false;
             }
-            buffer = midmax - arr[i];
-            arr[i+1] = arr[i+1] - buffer;
-        }
-        return arr[n-1] <= midmax;
+        }    
+        return true;
     }
     int minimizeArrayValue(vector<int>& nums) {
         int n = nums.size();
